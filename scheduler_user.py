@@ -212,14 +212,20 @@ def eclipse_info(target_name, time=time, display=True):
                 # eclipse start and end time
                 current_phase = item.phase
                 if eclipsing == 1:
-                    phase_start = 0 - 0.6*item.width_1
+                    phase_start = 1 - 0.6*item.width_1
                     phase_end = 0 + 0.6*item.width_1
+                    if current_phase < 0.1:
+                        phase_del_minus = abs(phase_start - current_phase+1)
+                        phase_del_plus  = (phase_end - current_phase)
+                    else:
+                        phase_del_minus = abs(phase_start - current_phase)
+                        phase_del_plus  = (phase_end+1 - current_phase)
                 elif eclipsing == 2:
                     phase_start = item.phase_2 - 0.6*item.width_2
                     phase_end = item.phase_2 + 0.6*item.width_2
-                phase_del_minus = phase_start - current_phase
-                phase_del_plus  = phase_end - current_phase
-                time_start = time + (phase_del_minus*item.period)*u.day
+                    phase_del_minus = abs(phase_start - current_phase)
+                    phase_del_plus  = abs(phase_end - current_phase)
+                time_start = time - (phase_del_minus*item.period)*u.day
                 time_end = time + (phase_del_plus*item.period)*u.day
                 # altitude and airmasses
                 frame_start = f.make_altaz_frame(site, time_start)
@@ -229,7 +235,7 @@ def eclipse_info(target_name, time=time, display=True):
                 alt_now   = item.altaz_transform(frame).alt
                 airmass_now   = item.airmass(frame)
                 # priority scores
-                priority_score = item.mean_priority(site, time, frame, dbcurs)
+                priority_score = round(float(item.mean_priority(site, time, frame, dbcurs)),ndigits=3)
                 if display:
                     # for use in detailed eclipse info function
                     return(
@@ -238,8 +244,8 @@ def eclipse_info(target_name, time=time, display=True):
                     print('Current phase:              {}'.format(round(float(item.phase),ndigits=3))),
                     print('Current airmass:            {}'.format(round(float(airmass_now),ndigits=3))),
                     print('Current priority score:     {}'.format(round(float(priority_score),ndigits=3))),
-                    print('Eclipse started:            {}'.format(time_start.isot[11:19])),
-                    print('Eclipse ends:               {}'.format(time_end.isot[11:19])),
+                    print('Eclipse started:            {}'.format(time_start)),#.isot[11:19])),
+                    print('Eclipse ends:               {}'.format(time_end)),#.isot[11:19])),
                     print('Altitude @ start:           {} deg'.format(round(float(alt_start/u.deg),ndigits=3))),
                     print('Current altitude:           {} deg'.format(round(float(alt_now/u.deg),ndigits=3))),
                     print('Altitude @ end:             {} deg\n'.format(round(float(alt_end/u.deg),ndigits=3)))
