@@ -494,10 +494,10 @@ class EclipsingBinary(Target):
             return 0
         
         bin_value = int(completeness[2*bin_no:2*(bin_no+1)],16)
-        gradient = 0.5 / (no_bins-2) # highest score when 1 observation away from complete
+        gradient = 0.5 / (no_bins-3)#2) # highest score when 1 observation away from complete
         intercept = 0.5 # unobserved score = 0.5
-        if int(bin_value) > obs_per_bin:    phase_score = 0.0
-        elif int(bin_value) == obs_per_bin: phase_score = 0.5
+        if int(bin_value) > obs_per_bin-1:    phase_score = 0.0 #obs_per_bin
+        elif int(bin_value) == obs_per_bin-1: phase_score = 0.5 #obs_per_bin
         else: phase_score = int(bin_value)*gradient + intercept
         return(phase_score)
     

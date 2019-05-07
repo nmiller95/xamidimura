@@ -126,7 +126,7 @@ def wipe_priority_table(curs, conn):
     conn.commit()
 
 
-def fill_priority_table(target_table, no_bins=5, no_obs=4, curs, conn):
+def fill_priority_table(target_table, curs, conn, no_bins=5, no_obs=4):
     """
     Fills priority table with defaults
     
